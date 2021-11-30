@@ -43,7 +43,7 @@ function HomePage({
   // Function called when no filter is applied i.e. 'none' filter is clicked
   const noFilter = (event) => {
     db.collection("posts")
-      .where("status", "==", "Approved")
+      // .where("status", "==", "Approved")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         //everytime a new post is added, this code fires...
@@ -56,77 +56,12 @@ function HomePage({
       });
   };
 
-  // Function called when street filter is applied
-  const streetFilter = (event) => {
-    // Get the user's current location
+  // Function called when stereo filter is applied
+  const stereotypesFilter = (event) => {
     event.preventDefault();
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        console.log("Latitude is :", position.coords.latitude);
-        console.log("Longitude is :", position.coords.longitude);
-      });
-    }
-    if ("geolocation" in navigator) {
-      console.log("Geolocation Available");
-    } else {
-      console.log("Geolocation Not Available");
-    }
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        Geocode.setApiKey("AIzaSyA8faJEyEJLo8QkFWHjvprH17SPVLJeO8Q");
-        Geocode.setLanguage("en");
-        Geocode.enableDebug();
-        Geocode.fromLatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        ).then(
-          (response) => {
-            setAddress(response.results[0].formatted_address);
-            let city, state, country;
-            for (
-              let i = 0;
-              i < response.results[0].address_components.length;
-              i++
-            ) {
-              for (
-                let j = 0;
-                j < response.results[0].address_components[i].types.length;
-                j++
-              ) {
-                switch (response.results[0].address_components[i].types[j]) {
-                  case "locality":
-                    city = response.results[0].address_components[i].long_name;
-                    break;
-                  case "administrative_area_level_1":
-                    state = response.results[0].address_components[i].long_name;
-                    break;
-                  case "country":
-                    country =
-                      response.results[0].address_components[i].long_name;
-                    break;
-                  case "route":
-                    setStreet(
-                      response.results[0].address_components[i].long_name
-                    );
-                    break;
-                  default:
-                }
-              }
-            }
-            console.log(city, state, country);
-            console.log(address);
-            console.log(neighborhood);
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
-      });
-    }
-    db.collection("posts")
-      .where("street", "==", street)
-      .where("status", "==", "Approved")
 
+    db.collection("posts")
+      .where("keyword", "==", "Stereotypes")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         //everytime a new post is added, this code fires...
@@ -139,157 +74,12 @@ function HomePage({
       });
   };
 
-  /* ******** useEffect For Street Filter ************** */
-  useEffect(() => {
-    //get current location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        console.log("Latitude is :", position.coords.latitude);
-        console.log("Longitude is :", position.coords.longitude);
-      });
-    }
-    if ("geolocation" in navigator) {
-      console.log("Geolocation Available");
-    } else {
-      console.log("Geolocation Not Available");
-    }
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        Geocode.setApiKey("AIzaSyA8faJEyEJLo8QkFWHjvprH17SPVLJeO8Q");
-        Geocode.setLanguage("en");
-        Geocode.enableDebug();
-        Geocode.fromLatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        ).then(
-          (response) => {
-            setAddress(response.results[0].formatted_address);
-            let city, state, country;
-            for (
-              let i = 0;
-              i < response.results[0].address_components.length;
-              i++
-            ) {
-              for (
-                let j = 0;
-                j < response.results[0].address_components[i].types.length;
-                j++
-              ) {
-                switch (response.results[0].address_components[i].types[j]) {
-                  case "locality":
-                    city = response.results[0].address_components[i].long_name;
-                    break;
-                  case "administrative_area_level_1":
-                    state = response.results[0].address_components[i].long_name;
-                    break;
-                  case "country":
-                    country =
-                      response.results[0].address_components[i].long_name;
-                    break;
-                  case "route":
-                    setStreet(
-                      response.results[0].address_components[i].long_name
-                    );
-                    break;
-                  default:
-                }
-              }
-            }
-            console.log(city, state, country);
-            console.log(address);
-            console.log(neighborhood);
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
-      });
-    }
-    db.collection("posts")
-      .where("street", "==", street)
-      .where("status", "==", "Approved")
-
-      .orderBy("timestamp", "desc")
-      .onSnapshot((snapshot) => {
-        //everytime a new post is added, this code fires...
-        setPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id, //the post ids
-            post: doc.data(),
-          }))
-        );
-      });
-  }, []); //[] symbol means run the code once;
-
-  // Function called when neighborhood filter is applied
-  const neighborhoodFilter = (event) => {
+  // Function called when verbal filter is applied
+  const vFilter = (event) => {
     event.preventDefault();
-    //get current location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        console.log("Latitude is :", position.coords.latitude);
-        console.log("Longitude is :", position.coords.longitude);
-      });
-    }
-    if ("geolocation" in navigator) {
-      console.log("Geolocation Available");
-    } else {
-      console.log("Geolocation Not Available");
-    }
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        Geocode.setApiKey("AIzaSyA8faJEyEJLo8QkFWHjvprH17SPVLJeO8Q");
-        Geocode.setLanguage("en");
-        Geocode.enableDebug();
-        Geocode.fromLatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        ).then(
-          (response) => {
-            setAddress(response.results[0].formatted_address);
-            let city, state, country;
-            for (
-              let i = 0;
-              i < response.results[0].address_components.length;
-              i++
-            ) {
-              for (
-                let j = 0;
-                j < response.results[0].address_components[i].types.length;
-                j++
-              ) {
-                switch (response.results[0].address_components[i].types[j]) {
-                  case "locality":
-                    city = response.results[0].address_components[i].long_name;
-                    break;
-                  case "administrative_area_level_1":
-                    state = response.results[0].address_components[i].long_name;
-                    break;
-                  case "country":
-                    country =
-                      response.results[0].address_components[i].long_name;
-                    break;
-                  case "neighborhood":
-                    setNeighborhood(
-                      response.results[0].address_components[i].long_name
-                    );
-                    break;
-                }
-              }
-            }
-            console.log(city, state, country);
-            console.log(address);
-            console.log(neighborhood);
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
-      });
-    }
+
     db.collection("posts")
-      .where("neighborhood", "==", neighborhood)
-      .where("status", "==", "Approved")
+      .where("keyword", "==", "Verbal Abuse")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         //everytime a new post is added, this code fires...
@@ -302,74 +92,12 @@ function HomePage({
       });
   };
 
-  /* ******** useEffect For Neighborhood Filter ************** */
-  useEffect(() => {
-    //get current location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        console.log("Latitude is :", position.coords.latitude);
-        console.log("Longitude is :", position.coords.longitude);
-      });
-    }
-    if ("geolocation" in navigator) {
-      console.log("Geolocation Available");
-    } else {
-      console.log("Geolocation Not Available");
-    }
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        Geocode.setApiKey("AIzaSyA8faJEyEJLo8QkFWHjvprH17SPVLJeO8Q");
-        Geocode.setLanguage("en");
-        Geocode.enableDebug();
-        Geocode.fromLatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        ).then(
-          (response) => {
-            setAddress(response.results[0].formatted_address);
-            let city, state, country;
-            for (
-              let i = 0;
-              i < response.results[0].address_components.length;
-              i++
-            ) {
-              for (
-                let j = 0;
-                j < response.results[0].address_components[i].types.length;
-                j++
-              ) {
-                switch (response.results[0].address_components[i].types[j]) {
-                  case "locality":
-                    city = response.results[0].address_components[i].long_name;
-                    break;
-                  case "administrative_area_level_1":
-                    state = response.results[0].address_components[i].long_name;
-                    break;
-                  case "country":
-                    country =
-                      response.results[0].address_components[i].long_name;
-                    break;
-                  case "neighborhood":
-                    setNeighborhood(
-                      response.results[0].address_components[i].long_name
-                    );
-                    break;
-                }
-              }
-            }
-            console.log(city, state, country);
-            console.log(address);
-            console.log(neighborhood);
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
-      });
-    }
+  // Function called when other filter is applied
+  const otherFilter = (event) => {
+    event.preventDefault();
+
     db.collection("posts")
-      .where("neighborhood", "==", neighborhood)
-      .where("status", "==", "Approved")
+      .where("keyword", "==", "Other")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         //everytime a new post is added, this code fires...
@@ -380,7 +108,7 @@ function HomePage({
           }))
         );
       });
-  }, []); //[] symbol means run the code once;
+  };
 
   //useEffect runs a piece of code based on a specific
   //condition
@@ -403,7 +131,7 @@ function HomePage({
 
   return (
     <div className="homePage">
-      {/* <div className="homePage__dropdown">
+      <div className="homePage__dropdown">
         <FormControl className={classes.formControl}>
           <InputLabel
             id="demo-controlled-open-select-label"
@@ -411,14 +139,6 @@ function HomePage({
           >
             Filter By
           </InputLabel>
-
-          <IconButton
-            size="large"
-            id="demo-controlled-open-select-label"
-            classes={{ label: "profilePage__button d-block d-lg-none" }}
-          >
-            <ListIcon />
-          </IconButton>
 
           <Select
             labelId="demo-controlled-open-select-label"
@@ -430,20 +150,23 @@ function HomePage({
             onChange={handleChangeDropDown}
           >
             <MenuItem value="">
-              <em>--Choose a Filter--</em>
+              <em>--Filter by Category--</em>
             </MenuItem>
             <MenuItem onClick={noFilter} value={"None"}>
               None
             </MenuItem>
-            <MenuItem onClick={streetFilter} value={"Street"}>
-              Street
+            <MenuItem onClick={vFilter} value={"Verbal Abuse"}>
+              Verbal Abuse
             </MenuItem>
-            <MenuItem onClick={neighborhoodFilter} value={"Neighborhood"}>
-              Neighborhood
+            <MenuItem onClick={stereotypesFilter} value={"Stereotypes"}>
+              Stereotypes
+            </MenuItem>
+            <MenuItem onClick={otherFilter} value={"Other"}>
+              Other
             </MenuItem>
           </Select>
         </FormControl>
-      </div> */}
+      </div>
       <div className="homePage__posts">
         <div className="homePage_postsRight">
           {/*Posts*/}
@@ -460,7 +183,7 @@ function HomePage({
                 caption={post.caption}
                 keyword={post.keyword}
                 // imageUrl={post.imageUrl}
-                addresss={post.addresss}
+                address={post.address}
               />
             ))
           }

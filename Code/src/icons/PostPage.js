@@ -5,6 +5,23 @@ import { storage, db } from "../firebase";
 import "./PostPage.css";
 import Geocode from "react-geocode";
 import { Button } from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import { makeStyles } from "@material-ui/core/styles";
+import Select from "@material-ui/core/Select";
+import "./HomePage.css";
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: "absolute",
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 function PostPage({
   user,
@@ -17,10 +34,19 @@ function PostPage({
   neighborhood,
   setStreet,
   street,
+  // caption,
+  // setCaption,
 }) {
+  /*states...how we set variables in react*/
+  const [posts, setPosts] = useState([]);
+  const [keyword, setKeyword] = React.useState("");
+  const [openDropDown, setOpenDropDown] = React.useState(false);
+  const classes = useStyles();
+  const handleChangeDropDown = (event) => {
+    setKeyword(event.target.value);
+  };
+
   const [caption, setCaption] = useState("");
-  const [keyword, setKeyword] = useState("");
-  const [addresss, setAddresss] = useState("");
   const [image, setImage] = useState(null);
   const [status, setStatus] = React.useState(""); //state to keep track of post status
   const handleChange = (e) => {
@@ -51,7 +77,8 @@ function PostPage({
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
-        Geocode.setApiKey("AIzaSyA8faJEyEJLo8QkFWHjvprH17SPVLJeO8Q");
+        // Geocode.setApiKey("AIzaSyA8faJEyEJLo8QkFWHjvprH17SPVLJeO8Q");
+        Geocode.setApiKey("AIzaSyAh-OCWnu2Gfo_zSA5l0dfbaN05CypGuNU");
         Geocode.setLanguage("en");
         Geocode.enableDebug();
         Geocode.fromLatLng(
@@ -127,36 +154,25 @@ function PostPage({
         alert(error.message);
       },
       () => {
-        // complete function ...
-        // storage
-        //   .ref("images")
-        //   .child(image.name)
-        //   .getDownloadURL() //GET DOWNLOAD LINK TO THE IMAGE
-        //   .then((url) => {
-        //post image inside db
         db.collection("posts").add({
           //get server timestamp so images are sorted by time posted
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           caption: caption,
           keyword: keyword,
-          //addresss: addresss,
-          // imageUrl: url,
+
           username: user.displayName,
-          // keyword: keyword,
+
           status: "Submitted",
           address: address,
           neighborhood: neighborhood,
           street: street,
         });
 
-        setProgress(0); //reset progress
         setCaption("");
         setKeyword("");
-        // setAddresss("");
+        setAddress("");
         setImage(null);
-        // setKeyword("");
         setStatus("");
-        // });
       }
     );
   };
@@ -171,13 +187,51 @@ function PostPage({
           onChange={(event) => setCaption(event.target.value)}
           value={caption}
         />
-        <br></br>
-        <input
-          type="text"
-          placeholder="Incident Keyword"
-          onChange={(event) => setKeyword(event.target.value)}
-          value={keyword}
-        />
+
+        <div className="homePage__dropdown">
+          <FormControl className={classes.formControl}>
+            <InputLabel
+              id="demo-controlled-open-select-label"
+              classes={{ label: "profilePage__buttonLarge d-none d-lg-flex" }}
+            >
+              Keyword
+            </InputLabel>
+
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              open={openDropDown}
+              onClose={() => setOpenDropDown(false)}
+              onOpen={() => setOpenDropDown(true)}
+              value={keyword}
+              onChange={handleChangeDropDown}
+            >
+              <MenuItem value="">
+                <em>--Choose a Keyword--</em>
+              </MenuItem>
+
+              <MenuItem
+                onChange={(event) => setKeyword(event.target.value)}
+                value={"Verbal Abuse"}
+              >
+                Verbal Abuse
+              </MenuItem>
+              <MenuItem
+                onChange={(event) => setKeyword(event.target.value)}
+                value={"Stereotypes"}
+              >
+                Stereotypes
+              </MenuItem>
+              <MenuItem
+                onChange={(event) => setKeyword(event.target.value)}
+                value={"Other"}
+              >
+                Other
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+
         <div className="postPage__location">
           <button
             className="postPage__button"
@@ -187,24 +241,12 @@ function PostPage({
           >
             Add Location
           </button>
-
           <input
-            placeholder="Click the button to add your location or type it here..."
+            placeholder="Click the button to add your location or type it manually"
             value={address}
             onChange={(event) => setAddress(event.target.value)}
           />
-          <br></br>
-          {/* <input
-            placeholder="Location of the incident..."
-            value={addresss}
-            onChange={(event) => setAddresss(event.target.value)}
-          /> */}
         </div>
-        {/* <input
-          type="file"
-          className="postPage__buttonInput"
-          onChange={handleChange}
-        /> */}
 
         <Button
           classes={{ label: "postPage__image" }}

@@ -36,9 +36,9 @@ function ReportSubmitted() {
         <Button
           classes={{ label: "reportSubmitted__button" }}
           component={Link}
-          to="/ProfilePage"
+          to="/"
         >
-          Go To Profile
+          Go To Homepage
         </Button>
       </div>
     </div>
