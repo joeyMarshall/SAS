@@ -17,7 +17,7 @@ The audience being addressed are women and girls.
  Here is a list of all deliverables submitted for this project: 
 
 - [Project Introductory Vlog](https://youtu.be/iFllN-x5YvM) (October 5, 2021)
-
+- [Project Commercial](https://youtu.be/NI_iSk-C2Bw) (November 30, 2021)
 ## License
 
 Creative Commons Share & Share Alike (CC BY-SA 4.0) https://creativecommons.org/licenses/by-sa/4.0/.
